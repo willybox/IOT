@@ -16,8 +16,8 @@ class Gsender
     private:
         const int SMTP_PORT = 465;
         const char* SMTP_SERVER = "smtp.gmail.com";
-        const char* EMAILBASE64_LOGIN = "am9yZGFuLmRhaGJpQGdtYWlsLmNvbQ==";
-        const char* EMAILBASE64_PASSWORD = "MTAxMjkyYXo=";
+        const char* EMAILBASE64_LOGIN = "LOGIN";
+        const char* EMAILBASE64_PASSWORD = "PASSWORD";
         const char* FROM = "jordan.dahbi@gmail.com";
         const char* _error = nullptr;
         char* _subject = nullptr;
