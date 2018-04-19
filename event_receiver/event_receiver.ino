@@ -3,9 +3,9 @@
 #include <ESP8266WiFiMesh.h>
 #include "Gsender.h"
 
-const char* ssid = "AndroidAPes";
-const char* password = "2310572207";
-
+const char* ssid = "SSID";
+const char* password = "PASSWORD";
+int aEnvoyer = 0;
 
 String manageRequest(String request);
 
@@ -27,9 +27,7 @@ String manageRequest(String request) {
   /* return a string to send back */
   char response[60];
   sprintf(response, "OK");
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  postData();
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+  aEnvoyer = 1;
   return response;
 }
 
@@ -38,6 +36,9 @@ void setup() {
   delay(10);
   
   pinMode(LED_BUILTIN, OUTPUT);
+
+  /* Initialise the mesh node */
+  mesh_node.begin();
  
   Serial.println();
   Serial.println();
@@ -50,11 +51,16 @@ void setup() {
   
   Serial.println("Setting up mesh node...");
 
-  /* Initialise the mesh node */
-  mesh_node.begin();
+  
 }
 
 void loop() {
+  if(aEnvoyer){
+    digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+    postData();
+    digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+    aEnvoyer = 0;
+  }
   digitalWrite(LED_BUILTIN, LOW);
   /* Accept any incoming connections */
   mesh_node.acceptRequest();
@@ -82,4 +88,3 @@ void postData(){
     Serial.println("Error in WiFi connection");   
  }
 }
-
