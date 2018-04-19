@@ -5,10 +5,33 @@
 
 const char* ssid = "AndroidAPes";
 const char* password = "2310572207";
+
+
 String manageRequest(String request);
 
 /* Create the mesh node object */
 ESP8266WiFiMesh mesh_node = ESP8266WiFiMesh(ESP.getChipId(), manageRequest);
+
+/**
+   Callback for when other nodes send you data
+
+   @request The string received from another node in the mesh
+   @returns The string to send back to the other node
+*/
+String manageRequest(String request) {
+  
+  /* Print out received message */
+  Serial.print("received: ");
+  Serial.println(request);
+
+  /* return a string to send back */
+  char response[60];
+  sprintf(response, "OK");
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+  postData();
+  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+  return response;
+}
 
 void setup() {
   Serial.begin(115200);
@@ -16,6 +39,8 @@ void setup() {
   
   pinMode(LED_BUILTIN, OUTPUT);
  
+  Serial.println();
+  Serial.println();
   WiFi.begin(ssid, password);   //WiFi connection
  
   while (WiFi.status() != WL_CONNECTED) {  //Wait for the WiFI connection completion
