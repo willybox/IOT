@@ -5,7 +5,9 @@
 
 const char* ssid = "SSID";
 const char* password = "PASSWORD";
-int aEnvoyer = 0;
+const char* mail = "xxx@xxx.xxx";
+
+int toSend = 0;
 
 String manageRequest(String request);
 
@@ -55,28 +57,22 @@ void setup() {
 }
 
 void loop() {
-  if(aEnvoyer){
+  if(toSend){
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
     postData();
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-    aEnvoyer = 0;
+    toSend = 0;
   }
   digitalWrite(LED_BUILTIN, LOW);
   /* Accept any incoming connections */
   mesh_node.acceptRequest();
-
-  /* Scan for other nodes and send them a message */
-  //char request[60];
-  //sprintf(request, "Hello world request from Mesh_Node%d.", ESP.getChipId());
-  //mesh_node.attemptScan(request);
-  //delay(1000);
 }
 
 void postData(){
   if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
     Gsender *gsender = Gsender::Instance();    // Getting pointer to class instance
-    String subject = "Alerte!";
-    if(gsender->Subject(subject)->Send("jordan.dahbi@gmail.com", "Une intrusion a été détectée")) {
+    String subject = "Alert!";
+    if(gsender->Subject(subject)->Send(mail, "Intrusion detected !!")) {
         Serial.println("Message send.");
     } else {
         Serial.print("Error sending message: ");
