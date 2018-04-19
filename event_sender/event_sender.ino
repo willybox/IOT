@@ -2,13 +2,10 @@
 #include <ESP8266WiFiMesh.h>
 #include <ESP8266WebServer.h>
 
-unsigned int request_i = 0;
-unsigned int response_i = 0;
-
 int enabled = 1;
-int nbTentativesIntrusion = 0;
+int nbIntrusion = 0;
 
-const char *AP_ssid = "detecteur_intrusion"; 
+const char *AP_ssid = "intrusion_detector"; 
 const char *AP_password = "aaaaaaaa";
 
 String manageRequest(String request);
@@ -25,7 +22,7 @@ String manageRequest(String request) {
 
   /* return a string to send back */
   char response[60];
-  sprintf(response, "Hello world response #%d from Mesh_Node%d.", response_i++, ESP.getChipId());
+  sprintf(response, "Undefined");
   return response;
 }
 
@@ -81,23 +78,23 @@ void sensorDisable(){
 String getPage(){
   if(enabled){
     String page = "<html lang=fr-FR><head><meta http-equiv='refresh' content='10'/>";
-    page += "<title>Detecteur Intrusion</title>";
+    page += "<title>Intrusion Detector</title>";
     page += "<style> body { background-color: #fffff; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }</style>";
-    page += "</head><body><h1>Detecteur Intrusion !</h1>";
-    page += "<p>Tentatives d'intrusion :</p>" + String(nbTentativesIntrusion);
-    page += "<h3>Il est actuellement active</h3>";
-    page += "<a href='/disable'>Desactiver</p>";
+    page += "</head><body><h1>Intrusion detector !</h1>";
+    page += "<p>Number of intrusions :</p>" + String(nbIntrusion);
+    page += "<h3>He's on</h3>";
+    page += "<a href='/disable'>Disable</p>";
     page += "</body></html>";
     return page;
   }
   else{
     String page = "<html lang=fr-FR><head><meta http-equiv='refresh' content='10'/>";
-    page += "<title>Detecteur Intrusion</title>";
+    page += "<title>Intrusion Detector</title>";
     page += "<style> body { background-color: #fffff; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }</style>";
-    page += "</head><body><h1>Detecteur Intrusion !</h1>";
-    page += "<p>Tentatives d'intrusion :</p>" + String(nbTentativesIntrusion);
-    page += "<h3>Il est actuellement desactive</h3>";
-    page += "<a href='/enable'>Activer</p>";
+    page += "</head><body><h1>Intrusion detector !</h1>";
+    page += "<p>Number of intrusions :</p>" + String(nbIntrusion);
+    page += "<h3>He's off</h3>";
+    page += "<a href='/enable'>Enable</p>";
     page += "</body></html>";
     return page;
   }
@@ -105,7 +102,7 @@ String getPage(){
 
 void loop() {
   server.handleClient();
-  mesh_node.acceptRequest();
+
   if(enabled){
     //read the pushbutton value into a variable
     int sensorVal = digitalRead(D2);
@@ -119,11 +116,11 @@ void loop() {
     } else {
       Serial.println("CLICK");
       digitalWrite(LED_BUILTIN, HIGH);
-      nbTentativesIntrusion++;
+      nbIntrusion++;
       
       /* Scan for other nodes and send them a message */
       char request[60];
-      sprintf(request, "Hello world request #%d from Mesh_Node%d.", request_i++, ESP.getChipId());
+      sprintf(request, "Alert");
       mesh_node.attemptScan(request);
     }  
   }
